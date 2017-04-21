@@ -1,2 +1,2 @@
 # upgradeToy
-java进阶Toy
+java preliminary demo code
