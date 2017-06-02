@@ -24,17 +24,32 @@ public class ParseMileage {
      */
     @Test
     public void test_dayData() {
-        File file = new File("dayData.json");
+        File file = new File("D:\\dayData.json");
         String json = readToString(file, "UTF-8");
-//        JSONArray dataArray = JSON.parseArray(json);
+        JSONArray dataArray = JSON.parseArray(json);
         JSONObject jsonObject = JSON.parseObject(json);
         System.out.println(jsonObject.toJSONString());
         double result = 0;
-//        for (int i = 0; i < dataArray.size(); i++) {
-//            JSONObject temp = JSON.parseObject(json);
-//            result += Double.parseDouble(temp.get("mileage").toString());
-//        }
-//        System.out.println(result);
+        for (int i = 0; i < dataArray.size(); i++) {
+            JSONObject temp = JSON.parseObject(json);
+            result += Double.parseDouble(temp.get("mileage").toString());
+        }
+        System.out.println(result);
+    }
+    
+    @Test
+    public void test_vehicleTotalDetail() {
+        File file = new File("D:\\dayData.json");
+        String json = readToString(file, "UTF-8");
+        JSONObject jsonObject = JSON.parseObject(json);
+        JSONArray dataArray = jsonObject.getJSONArray("data");
+        System.out.println(jsonObject.toJSONString());
+        double result = 0;
+        for (int i = 0; i < dataArray.size(); i++) {
+            JSONObject temp = (JSONObject) dataArray.get(i);
+            result += Double.parseDouble(temp.get("mileage").toString());
+        }
+        System.out.println(result);
     }
     
     /*
@@ -42,7 +57,7 @@ public class ParseMileage {
      */
     @Test
     public void test_parseMileage() {
-        File file = new File("mileage.json");
+        File file = new File("D:\\mileage.json");
         String json = readToString(file, "UTF-8");
         JSONObject jsonObject = JSON.parseObject(json);
         JSONObject data = jsonObject.getJSONObject("data");
@@ -50,7 +65,7 @@ public class ParseMileage {
         double result = 0;
         for (int i = 0; i < dataArray.size(); i++) {
             JSONObject temp = JSON.parseObject(dataArray.get(i).toString());
-//            System.out.println("carNumber:"+temp.get("carNumber")+",mileage:"+temp.get("mileage"));
+            System.out.println("carNumber:"+temp.get("carNumber")+",mileage:"+temp.get("mileage"));
             result += Double.parseDouble(temp.get("mileage").toString());
         }
         System.out.println(result);
