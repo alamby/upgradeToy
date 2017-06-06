@@ -16,7 +16,6 @@ import com.alibaba.fastjson.JSONObject;
 
 /**
 * @desc    
-* @author  刘超凡
 * @since   2017年5月17日
 *
 */

@@ -7,8 +7,12 @@ public class InterruptedExceptionExample {
 		//Start the thread's execution.
 		thread.start();
 		
+        System.out.println("thread.isInterrupted():"+thread.isInterrupted());
+		
 		//Interrupt the thread.
 		thread.interrupt();
+		
+		System.out.println("thread.isInterrupted():"+thread.isInterrupted());
 		
 		//Join the thread.
 		thread.join();
