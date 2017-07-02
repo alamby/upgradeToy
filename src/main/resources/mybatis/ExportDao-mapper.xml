@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.carlos.luke.dao.ExportDao">
+    <!--****************************ExportDaoImpl*******************************-->
+    <select id="queryEvent" resultType="com.carlos.luke.model.Event">
+        select * from gps_event where type = #{type}
+          and imei = #{imei}
+          and beginTime &gt;= #{beginTime}
+          and beginTime &lt;= #{endTime}
+		  LIMIT
+		  #{start},#{offset}
+    </select>
+
+</mapper>

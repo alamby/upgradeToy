@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context.xsd
+         http://www.springframework.org/schema/jdbc
+         http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+         http://www.springframework.org/schema/tx
+         http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+    <context:component-scan base-package="com.carlos.luke.dao"/>
+    <context:annotation-config/>
+
+    <bean id="parentDataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close" abstract="true">
+        <!-- 配置初始化大小、最小、最大 -->
+        <property name="initialSize" value="5"/>
+        <property name="minIdle" value="10"/>
+        <property name="maxActive" value="20"/>
+        <!-- 配置获取连接等待超时的时间 -->
+        <property name="maxWait" value="60000"/>
+        <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+        <property name="timeBetweenEvictionRunsMillis" value="60000"/>
+        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+        <property name="minEvictableIdleTimeMillis" value="300000"/>
+        <property name="validationQuery" value="SELECT 'x'"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="testOnBorrow" value="false"/>
+        <property name="testOnReturn" value="false"/>
+        <!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+        <property name="poolPreparedStatements" value="true"/>
+        <property name="maxPoolPreparedStatementPerConnectionSize" value="20"/>
+        <!-- 连接泄漏处理。Druid提供了RemoveAbandanded相关配置，用来关闭长时间不使用的连接（例如忘记关闭连接）。 -->
+        <property name="removeAbandoned" value="true"/>
+        <!-- 1800秒，也就是30分钟 -->
+        <property name="removeAbandonedTimeout" value="1800"/>
+        <!-- 关闭abanded连接时输出错误日志 -->
+        <property name="logAbandoned" value="true"/>
+        <!-- 配置监控统计拦截的filters, 监控统计："stat",防SQL注入："wall",组合使用： "stat,wall" -->
+        <property name="filters" value="stat"/>
+    </bean>
+
+    <!--mysql数据库-->
+    <bean id="dataSource11" parent="parentDataSource">
+        <property name="url" value="${db.mysql.url}"/>
+        <property name="username" value="${db.mysql.username}"/>
+        <property name="password" value="${db.mysql.password}"/>
+        <property name="driverClassName" value="${db.mysql.driverClassName}"/>
+    </bean>
+
+    <bean id="dataSource" class="com.carlos.luke.commons.datasource.DynamicDataSource">
+        <property name="defaultTargetDataSource" ref="dataSource11"/>
+        <property name="targetDataSources">
+            <map key-type="com.carlos.luke.commons.datasource.DataSourceEnum">
+                <entry key="DB11" value-ref="dataSource11"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="mapperLocations" value="classpath*:mybatis/*.xml"/>
+        <property name="configurationProperties">
+            <props>
+                <prop key="cacheEnabled">false</prop>
+                <prop key="lazyLoadingEnabled">true</prop>
+                <prop key="aggressiveLazyLoading">false</prop>
+                <prop key="multipleResultSetsEnabled">true</prop>
+                <prop key="defaultExecutorType">SIMPLE</prop>
+                <prop key="defaultStatementTimeout">25000</prop>
+                <prop key="logImpl">LOG4J</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- mybatis 批处理模式 -->
+    <bean id="sqlSessionTemplateBatch" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sqlSessionFactory"/>
+        <constructor-arg index="1" value="BATCH"/>
+    </bean>
+
+    <!-- mybatis 重用预处理模式 -->
+    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sqlSessionFactory"/>
+        <constructor-arg index="1" value="REUSE"/>
+    </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer"
+          p:basePackage="com.carlos.luke" p:sqlSessionFactoryBeanName="sqlSessionFactory" />
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+</beans>
