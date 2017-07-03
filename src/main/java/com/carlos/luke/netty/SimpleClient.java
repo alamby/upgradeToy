@@ -28,6 +28,7 @@ public class SimpleClient {
                 if (future.isSuccess()) {
                     future.channel().write(Unpooled.buffer().writeBytes("123".getBytes()));
                     future.channel().flush();
+                    future.channel().close();
                 }
             }
         });

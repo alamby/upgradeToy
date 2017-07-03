@@ -39,7 +39,7 @@ public class CsvUtil {
                 file.mkdir();  
             }  
             // 定义文件名格式并创建
-            csvFile = new File("D://export//"+fileName+".csv");
+            csvFile = new File("D://byday//"+fileName+".csv");
             System.out.println("csvFile：" + csvFile);  
             // UTF-8使正确读取分隔符","  
             csvFileOutputStream = new BufferedWriter(new OutputStreamWriter(  
