@@ -33,7 +33,10 @@ public class CsvUtil {
      */  
     @SuppressWarnings("rawtypes")  
     public static File createCSVFile(List exportData, String[] fileds,  
-            LinkedHashMap map, String outPutPath, String fileName) {  
+            LinkedHashMap map, String outPutPath, String fileName,String truckno) {
+        if (exportData == null || exportData.isEmpty()) {
+            return null;
+        }
         File csvFile = null;  
         BufferedWriter csvFileOutputStream = null;  
         try {
@@ -92,11 +95,13 @@ public class CsvUtil {
                         contents[n] = sdfNormal.format(beginTime);
                     }
                     csvFileOutputStream.write(csvHandlerStr(contents[n]));
-                    csvFileOutputStream.write(",");
-  
-                }  
+                    if (n<=20) {//给车牌列留空
+                        csvFileOutputStream.write(",");
+                    }
+                }
+                csvFileOutputStream.write(truckno);//补充车牌
                 csvFileOutputStream.write("\r\n");
-            }  
+            }
             csvFileOutputStream.flush();  
         } catch (Exception e) {  
             e.printStackTrace();  
@@ -138,11 +143,14 @@ public class CsvUtil {
   
         String path = "D://";  
         String fileName = "test";  
+        String truckno = "truckno";  
         String fileds[] = new String[] { "id", "imei" };// 设置列英文名（也就是实体类里面对应的列名）  
         File file = CsvUtil.createCSVFile(eventList, fileds, map, path,  
-                fileName);
-        String fileName2 = file.getName();  
-        System.out.println("文件名称：" + fileName2);  
+                fileName,truckno);
+        if (file != null) {
+            String fileName2 = file.getName();  
+            System.out.println("文件名称：" + fileName2);  
+        }
     }
     
     /** 

@@ -18,14 +18,17 @@ import org.slf4j.LoggerFactory;
 import com.carlos.luke.dao.ExportDao;
 import com.carlos.luke.model.Event;
 import com.carlos.luke.utils.CsvUtil;
+import com.chinaway.gps.card.service.GpsCardService;
 
 
 public class LoopQueryTask implements Runnable {
 	private static final Logger logger = LoggerFactory.getLogger(LoopQueryTask.class);
 	private ExportDao exportDao;
+	private GpsCardService gpsCardService;
 
-	public LoopQueryTask(ExportDao exportDao) {
+	public LoopQueryTask(ExportDao exportDao,GpsCardService gpsCardService) {
 		this.exportDao = exportDao;
+		this.gpsCardService = gpsCardService;
 	}
 
 	@Override
@@ -73,6 +76,14 @@ public class LoopQueryTask implements Runnable {
     	int pageNo = 0;
     	List<Event> result = new ArrayList<Event>();
     	List<Event> eventResult = new ArrayList<Event>();
+    	String truckno = "未查到车牌";
+    	try {
+    	    if (gpsCardService.getByImei(imei) != null) {
+    	        truckno = gpsCardService.getByImei(imei).getTruckno();
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
         do {
         	eventResult = exportDao.queryEvent(beginTime, endTime,imei, type, pageNo, pageSize);
         	result.addAll(eventResult);
@@ -86,7 +97,7 @@ public class LoopQueryTask implements Runnable {
                 return Integer.parseInt(String.valueOf(xxx));
             }
         });
-        logger.info("size:"+result.size()+",result:"+result);
+        logger.info("size:"+result.size());
         
         LinkedHashMap map = new LinkedHashMap();  
         map.put("1", "id(编号)");  
@@ -116,8 +127,10 @@ public class LoopQueryTask implements Runnable {
         String fileName = imei;  
         String fileds[] = new String[] { "id", "sysid", "imei", "trucknum", "driverno", "orgcode", "type", "beginLng", "beginLat", "beginTime", "endLng", "endLat", "endTime", "triggerTime", "triggerLng", "triggerLat", "createTime", "updateTime", "seconds", "additional_info", "additional_key" ,"truckno"};// 设置列英文名（也就是实体类里面对应的列名）  
         File file = CsvUtil.createCSVFile(result, fileds, map, path,  
-                fileName);
-        System.out.println(file.getName());
+                fileName,truckno);
+        if (file != null) {
+            System.out.println(file.getName());
+        }
     }	
 	
 }
