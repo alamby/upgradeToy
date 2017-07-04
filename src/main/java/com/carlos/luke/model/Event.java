@@ -1,10 +1,11 @@
 package com.carlos.luke.model;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Date;
 
 
-public class Event implements Comparable<Event> , Serializable{
+public class Event implements Comparator<Event> , Serializable{
 
 	private static final long serialVersionUID = -1379462471053114341L;
 	
@@ -29,9 +30,10 @@ public class Event implements Comparable<Event> , Serializable{
 	private int seconds;
 	private String additional_info;
 	private String additional_key;
+	private String truckno;
 
-	
-	@Override
+
+    @Override
 	public String toString() {
 		return "Event [id=" + id + ", sysid=" + sysid + ", imei=" + imei
 				+ ", trucknum=" + trucknum + ", driverno=" + driverno
@@ -42,7 +44,7 @@ public class Event implements Comparable<Event> , Serializable{
 				+ ", triggerLng=" + triggerLng + ", triggerLat=" + triggerLat
 				+ ", createTime=" + createTime + ", updateTime=" + updateTime
 				+ ", seconds=" + seconds + ", additional_info="
-				+ additional_info + ", additional_key=" + additional_key + "]";
+				+ additional_info + ", additional_key=" + additional_key + ", truckno=" + truckno + "]";
 	}
 
 
@@ -254,12 +256,22 @@ public class Event implements Comparable<Event> , Serializable{
 	public void setAdditional_key(String additional_key) {
 		this.additional_key = additional_key;
 	}
+	
+    
+    public String getTruckno() {
+        return truckno;
+    }
+
+
+    public void setTruckno(String truckno) {
+        this.truckno = truckno;
+    }
 
 
 	@Override
-	public int compareTo(Event arg0) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int compare(Event event1,Event event2) {
+	    long xxx = event1.getBeginTime().getTime() - event2.getBeginTime().getTime();
+	    return Integer.parseInt(String.valueOf(xxx));
 	}
 	
 }

@@ -5,7 +5,7 @@
 <mapper namespace="com.carlos.luke.dao.ExportDao">
     <!--****************************ExportDaoImpl*******************************-->
     <select id="queryEvent" resultType="com.carlos.luke.model.Event">
-        select * from gps_event where type = #{type}
+        select * from gps_event where type in (10,11)
           and imei = #{imei}
           and beginTime &gt;= #{beginTime}
           and beginTime &lt;= #{endTime}

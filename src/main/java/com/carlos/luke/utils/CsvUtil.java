@@ -6,10 +6,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 
 import com.carlos.luke.model.Event;
 
@@ -39,7 +42,7 @@ public class CsvUtil {
                 file.mkdir();  
             }  
             // 定义文件名格式并创建
-            csvFile = new File("D://byday//"+fileName+".csv");
+            csvFile = new File("D://export//"+fileName+".csv");
             System.out.println("csvFile：" + csvFile);  
             // UTF-8使正确读取分隔符","  
             csvFileOutputStream = new BufferedWriter(new OutputStreamWriter(  
@@ -62,7 +65,9 @@ public class CsvUtil {
             }  
             csvFileOutputStream.write("\r\n");  
             // 写入文件内容,  
-            // ============ //第一种格式：Arraylist<实体类>填充实体类的基本信息==================  
+            // ============ //第一种格式：Arraylist<实体类>填充实体类的基本信息==================
+            SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM d HH:mm:ss 'CST' yyyy",Locale.ENGLISH);
+            SimpleDateFormat sdfNormal = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             for (int j = 0; exportData != null && !exportData.isEmpty()  
                     && j < exportData.size(); j++) {  
                 Event t = (Event) exportData.get(j);  
@@ -73,14 +78,19 @@ public class CsvUtil {
                     Method method = clazz.getMethod(filedName);  
                     method.setAccessible(true);  
                     Object obj = method.invoke(t);  
-                    String str = String.valueOf(obj);  
+                    String str = String.valueOf(obj);
+
                     if (str == null || str.equals("null"))  
-                        str = "";  
+                        str = "";
                     contents[i] = str;
                 }  
   
                 for (int n = 0; n < contents.length; n++) {  
-                    // 将生成的单元格添加到工作表中  
+                    // 将生成的单元格添加到工作表中,时间转格式
+                    if ((n==9|n==12|n==13|n==16|n==17) && !(contents[n] == null || contents[n].equals(""))) {
+                        Date beginTime = sdf.parse(contents[n]);
+                        contents[n] = sdfNormal.format(beginTime);
+                    }
                     csvFileOutputStream.write(csvHandlerStr(contents[n]));
                     csvFileOutputStream.write(",");
   

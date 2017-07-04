@@ -1,11 +1,12 @@
 package com.carlos.luke.job;
 
 import java.io.BufferedReader;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -76,8 +77,15 @@ public class LoopQueryTask implements Runnable {
         	eventResult = exportDao.queryEvent(beginTime, endTime,imei, type, pageNo, pageSize);
         	result.addAll(eventResult);
         	pageNo=pageNo+100;
-        	Thread.sleep(2000);
+        	Thread.sleep(1000);
 		} while (eventResult.size() == 100);
+        Collections.sort(result, new Comparator<Event>() {
+            @Override
+            public int compare(Event event1, Event event2) {
+                long xxx = event1.getBeginTime().getTime() - event2.getBeginTime().getTime();
+                return Integer.parseInt(String.valueOf(xxx));
+            }
+        });
         logger.info("size:"+result.size()+",result:"+result);
         
         LinkedHashMap map = new LinkedHashMap();  
@@ -87,7 +95,7 @@ public class LoopQueryTask implements Runnable {
         map.put("4", "trucknum(车辆编号)");
         map.put("5", "driverno(司机编号)");
         map.put("6", "orgcode(机构号)");
-        map.put("7", "type(10为进出区域)");
+        map.put("7", "type(10/11为进出区域)");
         map.put("8", "beginLng(开始经度)");
         map.put("9", "beginLat(开始纬度)");
         map.put("10", "beginTime(开始时间)");
@@ -102,10 +110,11 @@ public class LoopQueryTask implements Runnable {
         map.put("19", "seconds(持续时间|秒)");
         map.put("20", "additional_info(附加信息)");
         map.put("21", "additional_key(额外key)");
+        map.put("22", "truckno(车牌号)");
   
         String path = "D://export//";  
         String fileName = imei;  
-        String fileds[] = new String[] { "id", "sysid", "imei", "trucknum", "driverno", "orgcode", "type", "beginLng", "beginLat", "beginTime", "endLng", "endLat", "endTime", "triggerTime", "triggerLng", "triggerLat", "createTime", "updateTime", "seconds", "additional_info", "additional_key" };// 设置列英文名（也就是实体类里面对应的列名）  
+        String fileds[] = new String[] { "id", "sysid", "imei", "trucknum", "driverno", "orgcode", "type", "beginLng", "beginLat", "beginTime", "endLng", "endLat", "endTime", "triggerTime", "triggerLng", "triggerLat", "createTime", "updateTime", "seconds", "additional_info", "additional_key" ,"truckno"};// 设置列英文名（也就是实体类里面对应的列名）  
         File file = CsvUtil.createCSVFile(result, fileds, map, path,  
                 fileName);
         System.out.println(file.getName());
