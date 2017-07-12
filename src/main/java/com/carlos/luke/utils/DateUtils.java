@@ -78,10 +78,29 @@ public class DateUtils {
 	}
 
 	public static void main(String[] args) {
-		Date date = formatStr2Date("20170705","yyyyMMdd");
+        DateTime startTime = new DateTime(new Date());
+        Long startTimeLong = startTime.minusDays(1).withTime(0, 0, 0, 0).toDate().getTime();
+        Long endTimeLong = new DateTime(startTime).withTime(0, 0, 0, 0).toDate().getTime();
+        
+		System.out.println("startTime:"+startTime);
 		
-		Date kk = getLastOfDay(new Date());
-		System.out.println(date);
+		
+        DateTime startTime2 = new DateTime(new Date());
+        startTime2 = startTime2.minusDays(0).withTime(0, 0, 0, 0);
+        DateTime endTime2 = new DateTime(startTime).minusDays(0).withTime(23, 59, 59, 999);
+        
+        Date start = startTime2.toDate();
+        Date end = endTime2.toDate();
+        System.out.println("start:"+start);
+        if (start.getTime() >= startTimeLong && end.getTime() < endTimeLong) {
+            System.out.println("ok");
+        }
+        if (start.getTime() >= endTimeLong) {
+            System.out.println("not ok");
+        }
+        Date old = new Date();
+        Date plus1 = new DateTime(old).plusSeconds(1).toDate();
+        System.out.println(1000.0 / (plus1.getTime() - old.getTime()));
 	}
 
 	/**

@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,24 +18,20 @@ public class ReadFromFile {
   
     /** 
      * @param args 
+     * @throws IOException 
+     * @throws FileNotFoundException 
      */  
-    public static void main(String[] args) {  
+    public static void main(String[] args) throws FileNotFoundException, IOException {  
         // TODO Auto-generated method stub
     	Set<String> set = new HashSet<String>();
-        String filePath = "D://export";
-        String fileName = "D://input.txt";  
+        String filePath = "D://export//lib";
         //readFileByBytes(fileName);  
         //readFileByChars(fileName);  
         //readFileByLines(fileName);  
-        try {
-        	set = readfile(filePath);
-        	System.out.println("size:"+set.size());
-        	readFileByLines2Set(fileName,set);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}  
+        ArrayList<File> list = getListFiles(filePath);
+    	for (File file : list) {
+            System.out.println(file.getName());
+        }
     }  
       
     /** 
@@ -245,37 +242,33 @@ public class ReadFromFile {
     /**
      * 读取某个文件夹下的所有文件
      */
-    public static Set<String> readfile(String filepath) throws FileNotFoundException, IOException {
+    public static void readfile(String filepath) throws FileNotFoundException, IOException {
     	Set<String> set = new HashSet<String>();
-            try {
-                    File file = new File(filepath);
-                    if (!file.isDirectory()) {
-                            System.out.println("文件");
-                            System.out.println("path=" + file.getPath());
-                            System.out.println("absolutepath=" + file.getAbsolutePath());
-                            System.out.println("name=" + file.getName());
-
-                    } else if (file.isDirectory()) {
-                            System.out.println("文件夹");
-                            String[] filelist = file.list();
-                            for (int i = 0; i < filelist.length; i++) {
-                                    File readfile = new File(filepath + "\\" + filelist[i]);
-                                    if (!readfile.isDirectory()) {
-                                    	if (set.contains(readfile.getName().replace(".csv", ""))) {
-                                    		System.out.println("name:"+readfile.getName());
-										}else {
-											set.add(readfile.getName().replace(".csv", ""));
-										}
-                                    } else if (readfile.isDirectory()) {
-                                            readfile(filepath + "\\" + filelist[i]);
-                                    }
-                            }
-
-                    }
-
-            } catch (FileNotFoundException e) {
-                    System.out.println("readfile()   Exception:" + e.getMessage());
-            }
-            return set;
+        File file = new File(filepath);
+        if (!file.isDirectory()) {
+                System.out.println("文件");
+                System.out.println("name=" + file.getName());
+        }
+     }
+    
+    public static ArrayList<File> getListFiles(Object obj) {  
+        File directory = null;  
+        if (obj instanceof File) {  
+            directory = (File) obj;  
+        } else {  
+            directory = new File(obj.toString());  
+        }  
+        ArrayList<File> files = new ArrayList<File>();  
+        if (directory.isFile()) {  
+            files.add(directory);  
+            return files;  
+        } else if (directory.isDirectory()) {  
+            File[] fileArr = directory.listFiles();  
+            for (int i = 0; i < fileArr.length; i++) {  
+                File fileOne = fileArr[i];  
+                files.addAll(getListFiles(fileOne));  
+            }  
+        }  
+        return files;  
     }
-}  
+}
