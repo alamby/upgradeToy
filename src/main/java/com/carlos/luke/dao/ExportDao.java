@@ -17,5 +17,6 @@ public interface ExportDao {
     public List<Event> queryEvent(@Param("beginTime")Date beginTime,@Param("endTime")Date endTime,
     		@Param("imei")String imei ,@Param("type")int type, @Param("start")int pageNo,@Param("offset")int pageSize);
 
+    public List<Event> queryInEvent(@Param("ids")List<Long>  ids);
 }
 

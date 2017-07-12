@@ -13,4 +13,13 @@
 		  #{start},#{offset}
     </select>
 
+    <select id="queryInEvent" resultType="com.carlos.luke.model.Event">
+        select * from gps_event
+          where id in  
+                  <foreach item="item" index="index" collection="ids"
+                         open="(" separator="," close=")">
+                        #{item}
+                </foreach>
+    </select>
+
 </mapper>

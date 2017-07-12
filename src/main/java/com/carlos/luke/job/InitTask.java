@@ -25,8 +25,8 @@ public class InitTask implements InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		Thread t = new Thread(new LoopQueryTask(exportDao,gpsCardService));
-		t.start();
+//		Thread t = new Thread(new LoopQueryTask(exportDao,gpsCardService));
+//		t.start();
 	}
 
     /**
