@@ -1,4 +1,4 @@
-package com.carlos.luke.communication.interthread;
+package com.carlos.luke.communication.interthread.interrupt;
 public class ThreadMain {
     public static void main(String[] args){
         try {

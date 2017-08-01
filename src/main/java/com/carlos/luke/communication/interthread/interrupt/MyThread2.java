@@ -1,4 +1,4 @@
-package com.carlos.luke.communication.interthread;
+package com.carlos.luke.communication.interthread.interrupt;
 public class MyThread2 extends Thread{
     @Override
     public void run() {
