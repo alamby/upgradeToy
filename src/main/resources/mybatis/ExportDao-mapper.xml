@@ -21,5 +21,21 @@
                         #{item}
                 </foreach>
     </select>
+    
+    <select id="queryAlarm0" resultType="com.carlos.luke.model.TerminalAlarmInfo">
+        select * from lct_terminal_alarm where alarm_type = 1
+          and imei = #{imei}
+          and start_time &gt;= #{start}
+          and end_time &lt;= #{end}
+          and alarm_status = 0
+    </select>
+    
+    <select id="queryAlarm1" resultType="com.carlos.luke.model.TerminalAlarmInfo">
+        select * from lct_terminal_alarm where alarm_type = 1
+          and imei = #{imei}
+          and start_time &gt;= #{start}
+          and end_time &lt;= #{end}
+          and alarm_status = 1
+    </select>
 
 </mapper>
