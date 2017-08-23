@@ -20,6 +20,7 @@
     <aop:aspectj-autoproxy proxy-target-class="true"/>
     <!--DAO-->
     <import resource="classpath:spring/datasource-config.xml"/>
+    <import resource="classpath:spring/redis-config.xml"/>
     <!--dubbo-->
     <dubbo:reference interface="com.chinaway.gps.card.service.GpsCardService" id="gpsCardService" registry="reference_registry" retries="2" timeout="60000" check="false"/>
     <dubbo:application name="luke"/>
